@@ -24,10 +24,10 @@
     <main>
       <h1>Custom Heading</h1>
       <p class="hint">Set the heading here, then add the Custom heading app block to a section in your theme editor.</p>
-      <form id="heading-form" hidden>
+      <form id="heading-form">
         <label for="heading">Storefront heading</label>
         <input id="heading" name="heading" type="text" maxlength="255" placeholder="Welcome to Our Store">
-        <button id="save" type="submit">Save heading</button>
+        <button id="save" type="submit" disabled>Save heading</button>
       </form>
       <p id="status" role="status">Loading your store settings…</p>
     </main>
@@ -38,6 +38,9 @@
       const status = document.querySelector("#status");
 
       async function requestHeading(method = "GET") {
+        if (!window.shopify || typeof window.shopify.idToken !== "function") {
+          throw new Error("Open Custom Heading from Shopify Admin to load or save your store heading.");
+        }
         const token = await window.shopify.idToken();
         const response = await fetch("/api/heading", {
           method,
@@ -55,10 +58,13 @@
       try {
         const result = await requestHeading();
         input.value = result.heading;
-        form.hidden = false;
+        button.disabled = false;
         status.textContent = "This heading will appear in the app block on your storefront.";
       } catch (error) {
         status.textContent = error instanceof Error ? error.message : "Unable to load settings.";
+        if (window.shopify && typeof window.shopify.idToken === "function") {
+          button.disabled = false;
+        }
       }
 
       form.addEventListener("submit", async (event) => {
