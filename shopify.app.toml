@@ -16,9 +16,3 @@ redirect_urls = [ "https://helloapp-beta.vercel.app/" ]
 
 [webhooks]
 api_version = "2026-10"
-
-[app.metafields.app.heading]
-type = "single_line_text_field"
-name = "Storefront heading"
-description = "Heading displayed by the Custom heading theme app block"
-access.storefront = "public_read"
