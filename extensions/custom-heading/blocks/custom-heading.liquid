@@ -1,4 +1,4 @@
-{% assign heading = app.metafields.app.heading.value %}
+{% assign heading = shop.metafields.app.heading.value %}
 {% if heading != blank %}
   <h1 {{ block.shopify_attributes }}>{{ heading | escape }}</h1>
 {% endif %}

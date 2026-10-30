@@ -114,10 +114,14 @@ export default async function handler(req, res) {
       const data = await callAdminApi(
         auth.shop,
         accessToken,
-        `query { currentAppInstallation { metafield(namespace: "$app", key: "heading") { value } } }`,
+        `query {
+          shop {
+            metafield(namespace: "$app", key: "heading") { value }
+          }
+        }`,
       );
       return sendJson(res, 200, {
-        heading: data.currentAppInstallation?.metafield?.value ?? "",
+        heading: data.shop?.metafield?.value ?? "",
       });
     }
 
@@ -129,11 +133,11 @@ export default async function handler(req, res) {
     const data = await callAdminApi(
       auth.shop,
       accessToken,
-      `query { currentAppInstallation { id } }`,
+      `query { shop { id } }`,
     );
-    const installationId = data.currentAppInstallation?.id;
-    if (typeof installationId !== "string") {
-      throw new Error("Unable to identify this app installation.");
+    const shopId = data.shop?.id;
+    if (typeof shopId !== "string") {
+      throw new Error("Unable to identify this Shopify store.");
     }
 
     const saved = await callAdminApi(
@@ -147,7 +151,7 @@ export default async function handler(req, res) {
       }`,
       {
         metafields: [{
-          ownerId: installationId,
+          ownerId: shopId,
           namespace: METAFIELD_NAMESPACE,
           key: METAFIELD_KEY,
           type: "single_line_text_field",

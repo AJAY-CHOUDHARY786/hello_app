@@ -1,6 +1,6 @@
 # Custom Heading Shopify app
 
-This project contains a Shopify embedded settings page and Theme App Extension. Merchants save a heading in the app; the app stores it in an app-owned Shopify metafield, and the theme block renders it as an escaped HTML `<h1>`. The app uses a small authenticated Vercel API endpoint to update that Shopify metafield; it does not use a separate database.
+This project contains a Shopify embedded settings page and Theme App Extension. Merchants save a heading in an app-owned Shopify shop metafield with storefront read access, and the theme block renders it as an escaped HTML `<h1>`. The app uses a small authenticated Vercel API endpoint to update that Shopify metafield; it does not use a separate database.
 
 ## Project files
 
