@@ -1,16 +1,12 @@
-<h1 {{ block.shopify_attributes }}>{{ block.settings.heading | escape }}</h1>
+{% assign heading = app.metafields.app.heading.value %}
+{% if heading != blank %}
+  <h1 {{ block.shopify_attributes }}>{{ heading | escape }}</h1>
+{% endif %}
 
 {% schema %}
 {
   "name": "Custom heading",
   "target": "section",
-  "settings": [
-    {
-      "type": "text",
-      "id": "heading",
-      "label": "Heading",
-      "default": "Hello in PERN Stack"
-    }
-  ]
+  "settings": []
 }
 {% endschema %}

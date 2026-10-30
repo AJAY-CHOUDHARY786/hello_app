@@ -1,13 +1,24 @@
-client_id = "REPLACE_WITH_SHOPIFY_CLIENT_ID"
-name = "Custom Heading"
-application_url = "https://example.com"
-embedded = false
+# Learn more about configuring your app at https://shopify.dev/docs/apps/tools/cli/configuration
+
+client_id = "b30d15249084002608b28edcec6dd540"
+name = "hello_app"
+application_url = "https://helloapp-beta.vercel.app/"
+embedded = true
 
 [access_scopes]
-scopes = ""
+# Learn more at https://shopify.dev/docs/apps/tools/cli/configuration#access_scopes
+scopes = "write_theme_code,read_themes,write_themes"
+optional_scopes = [ ]
+use_legacy_install_flow = false
 
 [auth]
-redirect_urls = []
+redirect_urls = [ "https://helloapp-beta.vercel.app/" ]
 
 [webhooks]
 api_version = "2026-10"
+
+[app.metafields.app.heading]
+type = "single_line_text_field"
+name = "Storefront heading"
+description = "Heading displayed by the Custom heading theme app block"
+access.storefront = "public_read"

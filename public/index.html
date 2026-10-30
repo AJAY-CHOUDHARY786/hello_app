@@ -1,0 +1,79 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="shopify-api-key" content="b30d15249084002608b28edcec6dd540">
+    <title>Custom Heading</title>
+    <script src="https://cdn.shopify.com/shopifycloud/app-bridge.js"></script>
+    <style>
+      :root { color-scheme: light; font-family: Arial, sans-serif; color: #202223; }
+      body { margin: 0; background: #f6f6f7; }
+      main { max-width: 720px; margin: 48px auto; padding: 28px; background: white; border: 1px solid #e1e3e5; border-radius: 12px; }
+      h1 { margin-top: 0; font-size: 24px; }
+      label { display: block; margin: 24px 0 8px; font-weight: 600; }
+      input { box-sizing: border-box; width: 100%; padding: 12px; border: 1px solid #8c9196; border-radius: 6px; font: inherit; }
+      button { margin-top: 16px; padding: 11px 18px; border: 0; border-radius: 6px; background: #008060; color: white; font: inherit; font-weight: 600; cursor: pointer; }
+      button:disabled { opacity: .6; cursor: wait; }
+      #status { min-height: 1.5em; margin-top: 14px; }
+      .hint { color: #616a75; line-height: 1.5; }
+      [hidden] { display: none !important; }
+    </style>
+  </head>
+  <body>
+    <main>
+      <h1>Custom Heading</h1>
+      <p class="hint">Set the heading here, then add the Custom heading app block to a section in your theme editor.</p>
+      <form id="heading-form" hidden>
+        <label for="heading">Storefront heading</label>
+        <input id="heading" name="heading" type="text" maxlength="255" placeholder="Welcome to Our Store">
+        <button id="save" type="submit">Save heading</button>
+      </form>
+      <p id="status" role="status">Loading your store settings…</p>
+    </main>
+    <script type="module">
+      const form = document.querySelector("#heading-form");
+      const input = document.querySelector("#heading");
+      const button = document.querySelector("#save");
+      const status = document.querySelector("#status");
+
+      async function requestHeading(method = "GET") {
+        const token = await window.shopify.idToken();
+        const response = await fetch("/api/heading", {
+          method,
+          headers: {
+            Authorization: `Bearer ${token}`,
+            ...(method === "POST" ? { "Content-Type": "application/json" } : {}),
+          },
+          ...(method === "POST" ? { body: JSON.stringify({ heading: input.value }) } : {}),
+        });
+        const result = await response.json();
+        if (!response.ok) throw new Error(result.error || "Unable to load settings.");
+        return result;
+      }
+
+      try {
+        const result = await requestHeading();
+        input.value = result.heading;
+        form.hidden = false;
+        status.textContent = "This heading will appear in the app block on your storefront.";
+      } catch (error) {
+        status.textContent = error instanceof Error ? error.message : "Unable to load settings.";
+      }
+
+      form.addEventListener("submit", async (event) => {
+        event.preventDefault();
+        button.disabled = true;
+        status.textContent = "Saving…";
+        try {
+          await requestHeading("POST");
+          status.textContent = "Heading saved. Add or refresh the Custom heading app block in your theme.";
+        } catch (error) {
+          status.textContent = error instanceof Error ? error.message : "Unable to save the heading.";
+        } finally {
+          button.disabled = false;
+        }
+      });
+    </script>
+  </body>
+</html>
