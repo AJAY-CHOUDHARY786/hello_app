@@ -1,4 +1,15 @@
-{% assign heading = shop.metafields.app.heading.value %}
+{% assign heading = blank %}
+{% for metafield_namespace in shop.metafields %}
+  {% assign namespace = metafield_namespace | first %}
+  {% if namespace contains 'app--' %}
+    {% assign heading_metafield = shop.metafields[namespace].heading %}
+    {% if heading_metafield != blank %}
+      {% assign heading = heading_metafield.value %}
+      {% break %}
+    {% endif %}
+  {% endif %}
+{% endfor %}
+
 {% if heading != blank %}
   <h1 {{ block.shopify_attributes }}>{{ heading | escape }}</h1>
 {% endif %}
